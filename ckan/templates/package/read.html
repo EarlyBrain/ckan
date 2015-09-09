@@ -82,7 +82,7 @@
   {% block resource_list %}
     {% if pkg.resources %}
       <form method="get" data-module="select-switch">
-        <select id="resource_dropdown" name="id">
+        <select id="resource_dropdown" name="resource_id">
           <option value=""></option>
           {% for resource in pkg.resources %}
             <option value={{ resource.id}}:{{ resource.format.lower() or 'data' }} {% if res.id == resource.id %}selected="selected"{% endif %}>{{ h.resource_display_name(resource) | truncate(50) }}</option>

@@ -398,9 +398,11 @@ class PackageController(base.BaseController):
         except NotAuthorized:
             abort(401, _('Unauthorized to read package %s') % id)
 
-        resource_id = request.params.get('id')
+        resource_id = request.params.get('resource_id')
         if resource_id:
-            resource_id = resource_id[0 : resource_id.rfind(":")]
+            pos_delimiter = resource_id.rfind(":")
+            if pos_delimiter > -1:
+                resource_id = resource_id[0 : resource_id.rfind(":")]
         else:
             resource_dict = c.pkg_dict.get('resources', [])
             if len(resource_dict):
@@ -620,7 +622,7 @@ class PackageController(base.BaseController):
                                           errors, error_summary)
             except NotAuthorized:
                 abort(401, _('Unauthorized to edit this resource'))
-            redirect(h.url_for(controller='package', action='resource_read',
+            redirect(h.url_for(controller='package', action='read',
                                id=id, resource_id=resource_id))
 
         context = {'model': model, 'session': model.Session,
