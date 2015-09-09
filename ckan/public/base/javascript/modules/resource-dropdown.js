@@ -6,7 +6,6 @@ function format(res) {
 }
     $("#resource_dropdown").select2({
         width: "300px",
-        placeholder: "リソースを選択してください",
         formatResult: format,
         formatSelection: format
     });

@@ -401,6 +401,10 @@ class PackageController(base.BaseController):
         resource_id = request.params.get('id')
         if resource_id:
             resource_id = resource_id[0 : resource_id.rfind(":")]
+        else:
+            resource_dict = c.pkg_dict.get('resources', [])
+            if len(resource_dict):
+                c.resource = resource_dict[0]
 
         for resource in c.pkg_dict.get('resources', []):
             if resource['id'] == resource_id:
