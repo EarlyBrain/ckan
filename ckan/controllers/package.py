@@ -398,6 +398,19 @@ class PackageController(base.BaseController):
         except NotAuthorized:
             abort(401, _('Unauthorized to read package %s') % id)
 
+        resource_id = request.params.get('id')
+        if resource_id:
+            resource_id = resource_id[0 : resource_id.rfind(":")]
+        else:
+            resource_dict = c.pkg_dict.get('resources', [])
+            if len(resource_dict):
+                c.resource = resource_dict[0]
+
+        for resource in c.pkg_dict.get('resources', []):
+            if resource['id'] == resource_id:
+                c.resource = resource
+                break
+
         # used by disqus plugin
         c.current_package_id = c.pkg.id
         c.related_count = c.pkg.related_count
