@@ -11,7 +11,7 @@
         {{ _('Private') }}
       </span>
     {% endif %}
-    <h1>
+    <h1 style="display:inline;">
       {% block page_heading %}
         {{ pkg.title or pkg.name }}
         {% if pkg.state.startswith('draft') %}
@@ -22,6 +22,21 @@
         {% endif %}
       {% endblock %}
     </h1>
+
+    {% block resources_outer %}
+      {% if pkg.resources and not hide_resources %}
+        <ul class="dataset-resources unstyled" style="display:inline">
+          {% block resources_inner %}
+            {% for resource in h.dict_list_reduce(pkg.resources, 'format') %}
+            <li>
+              <a href="{{ h.url_for(controller='package', action='read', id=pkg.name) }}" class="label" data-format="{{ resource.lower() }}">{{ resource }}</a>
+            </li>
+            {% endfor %}
+          {% endblock %}
+        </ul>
+      {% endif %}
+    {% endblock %}
+
     {% block package_notes %}
       {% if c.pkg_notes_formatted %}
         <div class="notes embedded-content">
