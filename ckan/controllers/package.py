@@ -393,6 +393,9 @@ class PackageController(base.BaseController):
         try:
             c.pkg_dict = get_action('package_show')(context, data_dict)
             c.pkg = context['package']
+            c.package_activity_stream = get_action(
+                    'package_activity_list_small_html')(context,
+                            {'id': c.pkg_dict['id']})
         except NotFound:
             abort(404, _('Dataset not found'))
         except NotAuthorized:

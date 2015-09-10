@@ -49,84 +49,95 @@
     <span class="insert-comment-thread"></span>
   {% endblock %}
 
-  {% block resource_actions %}
-    <div class="actions" style="top:auto;right:20px;">
-      <ul>
-        {% block resource_actions_inner %}
-          {% if res.url and h.is_url(res.url) %}
-            {% if h.check_access('package_update', {'id':pkg.id }) %}
-              <li>{% link_for _('Manage'), controller='package', action='resource_edit', id=pkg.name, resource_id=res.id, class_='btn', icon='wrench' %}</li>
-            {% endif %}
-            <li>
-              <a class="btn btn-primary resource-url-analytics resource-type-{{ res.resource_type }}" href="{{ res.url }}">
-                {% if res.resource_type in ('listing', 'service') %}
-                  <i class="icon-eye-open"></i> {{ _('View') }}
-                {% elif  res.resource_type == 'api' %}
-                  <i class="icon-key"></i> {{ _('API Endpoint') }}
-                {% elif not res.has_views or not res.can_be_previewed %}
-                  <i class="icon-external-link"></i> {{ _('Go to resource') }}
-                {% else %}
-                  <i class="icon-download"></i> {{ _('Download') }}
-                {% endif %}
-              </a>
-            </li>
-          {% endif %}
-          {% if 'datastore' in g.plugins %}
-            <li>{% snippet 'package/snippets/data_api_button.html', resource=res, datastore_root_url=c.datastore_api %}</li>
-          {% endif %}
-        {% endblock %}
-      </ul>
-    </div>
-  {% endblock %}
-
-  {% block resource_list %}
-    {% if pkg.resources %}
-      <form method="get" data-module="select-switch">
-        <select id="resource_dropdown" name="resource_id">
-          <option value=""></option>
-          {% for resource in pkg.resources %}
-            <option value={{ resource.id}}:{{ resource.format.lower() or 'data' }} {% if res.id == resource.id %}selected="selected"{% endif %}>{{ h.resource_display_name(resource) | truncate(50) }}</option>
-          {% endfor %}
-        </select>
-        <button class="btn js-hide" type="submit">{{ _('Go') }}</button>
-      </form>
-    {% else %}
-      {% if h.check_access('resource_create', {'package_id': pkg['id']}) %}
-          {% trans url=h.url_for(controller='package', action='new_resource', id=pkg.name) %}
-            <p class="empty">This dataset has no data, <a href="{{ url }}">why not add some?</a></p>
-          {% endtrans %}
-      {% else %}
-          <p class="empty">{{ _('This dataset has no data') }}</p>
-      {% endif %}
-    {% endif %}
-  {% endblock %}
-  
-  {% block resource_content %}
-    {% if res %}
-      {% block resource_read_title %}<h3>{{ h.resource_display_name(res) | truncate(50) }}</h3>{% endblock %}
-      {% block resource_read_url %}
-        {% if res.url and h.is_url(res.url) %}
-          <p class="muted ellipsis">{{ _('URL:') }} <a href="{{ res.url }}" title="{{ res.url }}">{{ res.url }}</a></p>
-        {% elif res.url %}
-          <p class="muted ellipsis">{{ _('URL:') }} {{ res.url }}</p>
-        {% endif %}
-      {% endblock %}
-      <div class="prose notes" property="rdfs:label">
-        {% if res.description %}
-          {{ h.render_markdown(res.description) }}
-        {% else %}
-          <p class="empty">このリソースには説明がありません</p>
-        {% endif %}
-      </div>
-    {% endif %}
-  {% endblock %}
-
   {% block package_tags %}
     {% snippet "package/snippets/tags.html", tags=pkg.tags %}
   {% endblock %}
 
-  {% block resource_additional_info %}
-    {% snippet "package/snippets/resource_additional_info.html", pkg=pkg, res=res %}
+  {% block resource_select %}
+    <section style="margin-top:20px;">
+      {% block resource_actions %}
+        <div class="actions" style="top:auto;right:25px;">
+          <ul>
+            {% block resource_actions_inner %}
+              {% if res.url and h.is_url(res.url) %}
+                {% if h.check_access('package_update', {'id':pkg.id }) %}
+                  <li>{% link_for _('Manage'), controller='package', action='resource_edit', id=pkg.name, resource_id=res.id, class_='btn', icon='wrench' %}</li>
+                {% endif %}
+                <li>
+                  <a class="btn btn-primary resource-url-analytics resource-type-{{ res.resource_type }}" href="{{ res.url }}">
+                    {% if res.resource_type in ('listing', 'service') %}
+                      <i class="icon-eye-open"></i> {{ _('View') }}
+                    {% elif  res.resource_type == 'api' %}
+                      <i class="icon-key"></i> {{ _('API Endpoint') }}
+                    {% elif not res.has_views or not res.can_be_previewed %}
+                      <i class="icon-external-link"></i> {{ _('Go to resource') }}
+                    {% else %}
+                      <i class="icon-download"></i> {{ _('Download') }}
+                    {% endif %}
+                  </a>
+                </li>
+              {% endif %}
+              {% if 'datastore' in g.plugins %}
+                <li>{% snippet 'package/snippets/data_api_button.html', resource=res, datastore_root_url=c.datastore_api %}</li>
+              {% endif %}
+            {% endblock %}
+          </ul>
+        </div>
+      {% endblock %}
+
+      {% block resource_list %}
+        {% if pkg.resources %}
+          <form method="get" data-module="select-switch">
+            <select id="resource_dropdown" name="resource_id">
+              <option value=""></option>
+              {% for resource in pkg.resources %}
+                <option value={{ resource.id}}:{{ resource.format.lower() or 'data' }} {% if res.id == resource.id %}selected="selected"{% endif %}>{{ h.resource_display_name(resource) | truncate(50) }}</option>
+              {% endfor %}
+            </select>
+            <button class="btn js-hide" type="submit">{{ _('Go') }}</button>
+          </form>
+        {% else %}
+          {% if h.check_access('resource_create', {'package_id': pkg['id']}) %}
+              {% trans url=h.url_for(controller='package', action='new_resource', id=pkg.name) %}
+                <p class="empty">This dataset has no data, <a href="{{ url }}">why not add some?</a></p>
+              {% endtrans %}
+          {% else %}
+              <p class="empty">{{ _('This dataset has no data') }}</p>
+          {% endif %}
+        {% endif %}
+      {% endblock %}
+    </section>
+  {% endblock %}
+  
+  {% block resource_content %}
+    {% block activity_stream %}
+      {{ c.package_activity_stream | safe }}
+    {% endblock %}
+
+    {% if res %}
+      <div style="width:340px;">
+        {% block resource_read_title %}<h3>{{ h.resource_display_name(res) | truncate(50) }}</h3>{% endblock %}
+        {% block resource_read_url %}
+          {% if res.url and h.is_url(res.url) %}
+            <p class="muted ellipsis">{{ _('URL:') }} <a href="{{ res.url }}" title="{{ res.url }}">{{ res.url }}</a></p>
+          {% elif res.url %}
+            <p class="muted ellipsis">{{ _('URL:') }} {{ res.url }}</p>
+          {% endif %}
+        {% endblock %}
+        <div class="prose notes" property="rdfs:label">
+          {% if res.description %}
+            {{ h.render_markdown(res.description) }}
+          {% else %}
+            <p class="empty">このリソースには説明がありません</p>
+          {% endif %}
+        </div>
+      </div>
+
+      {% block resource_additional_info %}
+        {% snippet "package/snippets/resource_additional_info.html", pkg=pkg, res=res %}
+      {% endblock %}
+
+    {% endif %}
   {% endblock %}
 
 {% endblock %}
