@@ -2630,10 +2630,24 @@ def user_activity_list_html(context, data_dict):
         'action': 'activity',
         'id': data_dict['id'],
         'offset': offset,
+        'content': '',
     }
     return activity_streams.activity_list_to_html(
         context, activity_stream, extra_vars)
 
+
+def package_activity_list_limit(context, data_dict, content):
+    activity_stream = package_activity_list(context, data_dict)
+    offset = int(data_dict.get('offset', 0))
+    extra_vars = {
+        'controller': 'package',
+        'action': 'activity',
+        'id': data_dict['id'],
+        'offset': offset,
+        'content': content,
+    }
+    return activity_streams.activity_list_to_html(
+        context, activity_stream, extra_vars)
 
 def package_activity_list_html(context, data_dict):
     '''Return a package's activity stream as HTML.
@@ -2654,17 +2668,12 @@ def package_activity_list_html(context, data_dict):
     :rtype: string
 
     '''
-    activity_stream = package_activity_list(context, data_dict)
-    offset = int(data_dict.get('offset', 0))
-    extra_vars = {
-        'controller': 'package',
-        'action': 'activity',
-        'id': data_dict['id'],
-        'offset': offset,
-    }
-    return activity_streams.activity_list_to_html(
-        context, activity_stream, extra_vars)
+    content = ''
+    return package_activity_list_limit(context, data_dict, content)
 
+def package_activity_list_small_html(context, data_dict):
+    content = 'dataset'
+    return package_activity_list_limit(context, data_dict, content)
 
 def group_activity_list_html(context, data_dict):
     '''Return a group's activity stream as HTML.
@@ -2692,6 +2701,7 @@ def group_activity_list_html(context, data_dict):
         'action': 'activity',
         'id': data_dict['id'],
         'offset': offset,
+        'content': '',
     }
     return activity_streams.activity_list_to_html(
         context, activity_stream, extra_vars)
@@ -2716,6 +2726,7 @@ def organization_activity_list_html(context, data_dict):
         'action': 'activity',
         'id': data_dict['id'],
         'offset': offset,
+        'content': '',
     }
 
     return activity_streams.activity_list_to_html(
@@ -2747,6 +2758,7 @@ def recently_changed_packages_activity_list_html(context, data_dict):
         'controller': 'package',
         'action': 'activity',
         'offset': offset,
+        'content': '',
     }
     return activity_streams.activity_list_to_html(
         context, activity_stream, extra_vars)
@@ -3306,6 +3318,7 @@ def dashboard_activity_list_html(context, data_dict):
         'controller': 'user',
         'action': 'dashboard',
         'offset': offset,
+        'content': '',
     }
     return activity_streams.activity_list_to_html(context, activity_stream,
                                                   extra_vars)

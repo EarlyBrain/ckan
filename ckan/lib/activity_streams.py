@@ -280,5 +280,13 @@ def activity_list_to_html(context, activity_stream, extra_vars):
                               'timestamp': activity['timestamp'],
                               'is_new': activity.get('is_new', False)})
     extra_vars['activities'] = activity_list
-    return literal(base.render('activity_streams/activity_stream_items.html',
-        extra_vars=extra_vars))
+
+    page = 'activity_streams/activity_stream_items.html'
+    try:
+        if extra_vars['content'] == 'dataset':
+            page = 'activity_streams/activity_stream_items_dataset.html'
+
+    except KeyError:
+        page = 'activity_streams/activity_stream_items.html'
+
+    return literal(base.render(page, extra_vars=extra_vars))

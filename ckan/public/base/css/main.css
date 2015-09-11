@@ -8989,6 +8989,12 @@ h4 small {
 .activity .item.follow-group .icon {
   background-color: #8ba669;
 }
+.activity-dataset {
+  width: 300px;
+  right: 20px;
+  float: right;
+  word-wrap: break-word;
+}
 .dropdown:hover .dropdown-menu {
   display: block;
 }
