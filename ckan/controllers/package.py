@@ -421,37 +421,39 @@ class PackageController(base.BaseController):
         c.current_package_id = c.pkg.id
         c.related_count = c.pkg.related_count
 
-        # can the resources be previewed?
-        for resource in c.pkg_dict['resources']:
-            # Backwards compatibility with preview interface
-            resource['can_be_previewed'] = self._resource_preview(
-                {'resource': resource, 'package': c.pkg_dict})
+        resource_views = None
+        current_resource_view = None
+        if c.resource:
+            # can the resources be previewed?
+            for resource in c.pkg_dict['resources']:
+                # Backwards compatibility with preview interface
+                resource['can_be_previewed'] = self._resource_preview(
+                    {'resource': resource, 'package': c.pkg_dict})
+
+                resource_views = get_action('resource_view_list')(
+                    context, {'id': resource['id']})
+                resource['has_views'] = len(resource_views) > 0
+
+            c.resource['can_be_previewed'] = self._resource_preview(
+                {'resource': c.resource, 'package': c.package})
 
             resource_views = get_action('resource_view_list')(
-                context, {'id': resource['id']})
-            resource['has_views'] = len(resource_views) > 0
+                context, {'id': resource_id})
+            c.resource['has_views'] = len(resource_views) > 0
 
-        c.resource['can_be_previewed'] = self._resource_preview(
-            {'resource': c.resource, 'package': c.package})
-
-        resource_views = get_action('resource_view_list')(
-            context, {'id': resource_id})
-        c.resource['has_views'] = len(resource_views) > 0
-
-        current_resource_view = None
-        view_id = request.GET.get('view_id')
-        if c.resource['can_be_previewed'] and not view_id:
-            current_resource_view = None
-        elif c.resource['has_views']:
-            if view_id:
-                current_resource_view = [rv for rv in resource_views
-                                         if rv['id'] == view_id]
-                if len(current_resource_view) == 1:
-                    current_resource_view = current_resource_view[0]
+            view_id = request.GET.get('view_id')
+            if c.resource['can_be_previewed'] and not view_id:
+                current_resource_view = None
+            elif c.resource['has_views']:
+                if view_id:
+                    current_resource_view = [rv for rv in resource_views
+                                             if rv['id'] == view_id]
+                    if len(current_resource_view) == 1:
+                        current_resource_view = current_resource_view[0]
+                    else:
+                        abort(404, _('Resource view not found'))
                 else:
-                    abort(404, _('Resource view not found'))
-            else:
-                current_resource_view = resource_views[0]
+                    current_resource_view = resource_views[0]
 
         package_type = c.pkg_dict['type'] or 'dataset'
         self._setup_template_variables(context, {'id': id},
