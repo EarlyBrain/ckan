@@ -115,7 +115,7 @@
     {% endblock %}
 
     {% if res %}
-      <div style="width:340px;">
+      <div style="width:400px;">
         {% block resource_read_title %}<h3>{{ h.resource_display_name(res) | truncate(50) }}</h3>{% endblock %}
         {% block resource_read_url %}
           {% if res.url and h.is_url(res.url) %}

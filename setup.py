@@ -81,6 +81,7 @@ entry_points = {
         'recline_map_view = ckanext.reclineview.plugin:ReclineMapView',
         'image_view = ckanext.imageview.plugin:ImageView',
         'webpage_view = ckanext.webpageview.plugin:WebPageView',
+        'pdf_view = ckanext.pdfview.plugin:PdfView',
         # FIXME: Remove deprecated resource previews below. You should use the
         # versions as *_view instead.
         'text_preview = ckanext.textview.plugin:TextView',
