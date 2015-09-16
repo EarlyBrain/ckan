@@ -1145,7 +1145,7 @@ def resource_display_name(resource_dict):
 def resource_link(resource_dict, package_id):
     text = resource_display_name(resource_dict)
     url = url_for(controller='package',
-                  action='resource_read',
+                  action='read',
                   id=package_id,
                   resource_id=resource_dict['id'])
     return link_to(text, url)
