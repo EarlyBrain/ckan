@@ -1,6 +1,6 @@
-__version__ = '2.4.0'
+__version__ = '2.4.0EB'
 
-__description__ = 'CKAN Software'
+__description__ = 'CKAN Software(Customize By Early Brain Co., Ltd.)'
 __long_description__ = \
 '''CKAN software provides a hub for datasets. The flagship site running CKAN
 is theDataHub.org but it is also used for dozens of other open data websites
